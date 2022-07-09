@@ -26,5 +26,3 @@ class Car extends Vehicle {
 
 const car = new Car(4, 'red');
 car.startDrivingProcess();
-console.log(car.color);
-console.log(car.wheels);

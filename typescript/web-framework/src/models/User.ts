@@ -1,22 +1,32 @@
-interface UserProps {
+import { Model } from './Model';
+import { Attributes } from './Attributes';
+import { ApiSync } from './ApiSync';
+import { Eventing } from './Eventing';
+import { Collection } from './Collection';
+
+const rootUrl = 'http://localhost:3000/users';
+
+export interface UserProps {
+  id?: number;
   name?: string;
   age?: number;
 }
 
-type Callback = () => {};
-
-export class User {
-  events: { [key: string]: Callback[] } = {};
-
-  constructor(private data: UserProps) {}
-
-  get(propName: string): number | string {
-    return this.data[propName];
+export class User extends Model<UserProps> {
+  static buildUser(attrs: UserProps): User {
+    return new User(new Attributes<UserProps>(attrs), new Eventing(), new ApiSync<UserProps>(rootUrl));
   }
 
-  set(update: UserProps): void {
-    Object.assign(this.data, update);
+  isAdminUser(): boolean {
+    return this.get('id') === 1;
   }
 
-  on(eventName: string, callback: Callback) {}
+  static buildUserCollection(): Collection<User, UserProps> {
+    return new Collection<User, UserProps>(rootUrl, (json: UserProps) => User.buildUser(json));
+  }
+
+  setRandomAge(): void {
+    const age = Math.round(Math.random() * 100);
+    this.set({ age });
+  }
 }

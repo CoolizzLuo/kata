@@ -1,8 +1,16 @@
+import { UserEdit } from './views/UserEdit';
 import { User } from './models/User';
 
-const user = new User({ name: 'myname', age: 20 });
+const user = User.buildUser({ name: 'Sam', age: 20 });
 
-user.set({ name: 'newname' });
+const root = document.getElementById('root');
 
-console.log(user.get('name'));
-console.log(user.get('age'));
+if (root) {
+  const userEdit = new UserEdit(root, user);
+
+  userEdit.render();
+
+  console.log(userEdit);
+} else {
+  throw new Error('Root element not found');
+}
